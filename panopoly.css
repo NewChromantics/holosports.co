@@ -1,0 +1,21 @@
+@font-face {
+	font-family: Futura;
+	src: url("FuturaStd-Bold.otf") format("opentype");
+}
+
+#Panopoly:before
+{
+	font-size:		3em;
+	display:		block;
+	width:			99%;
+	height:			1.11em;
+	content:		"P";
+	font-weight:	bold;
+	margin:			0pt 0pt 0pt -0.11em;
+	padding:		0px;
+	text-align:		center;
+	font-family:	Futura, Arial;
+	color:			#fff;
+	text-shadow:	0.095em 0pt #0df, 0.21em 0pt #7ae6ff, 0.32em 0pt #a8efff, 0.43em 0pt #ddf8ff;
+}
+
