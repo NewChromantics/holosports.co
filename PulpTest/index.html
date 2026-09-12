@@ -2,11 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>Isometric WebGL Scene</title>
   <style>
     html, body { margin: 0; height: 100%; overflow: hidden; background: #17181c; }
-    canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+    canvas { display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; }
     canvas:active { cursor: grabbing; }
+    input[type="range"] { touch-action: none; }
+    input[type="range"]::-webkit-slider-thumb { width: 20px; height: 20px; }
+    input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; }
     #hint {
       position: fixed; left: 12px; top: 10px;
       font: 12px/1.4 system-ui, sans-serif; color: #9aa0aa;
@@ -52,12 +56,55 @@
       z-index: 10;
     }
     #dropHint.visible { opacity: 1; }
+
+    /* Bigger, touch-friendly controls on phones/tablets. pointer:coarse
+       targets touch input specifically (rather than just narrow screens),
+       so a touch laptop/tablet in a wide window still gets the bump. */
+    @media (pointer: coarse) {
+      #hint { font-size: 14px; top: 8px; left: 10px; }
+
+      #transport {
+        flex-wrap: wrap;
+        row-gap: 10px;
+        padding: 14px 16px;
+        font-size: 16px;
+      }
+      #transport button {
+        padding: 12px 20px;
+        font-size: 16px;
+        min-height: 44px;
+        border-radius: 6px;
+      }
+      #timeline { min-width: 160px; }
+      #timeLabel { min-width: 110px; font-size: 15px; }
+      #geoDebugSlider { flex: 1 1 140px !important; }
+
+      #dofPanel {
+        top: auto; bottom: 74px; right: 8px;
+        padding: 14px 16px;
+        font-size: 15px;
+        gap: 10px;
+        max-width: 260px;
+      }
+      #dofPanel .dofTitle { font-size: 15px; }
+      #dofPanel .dofRow { gap: 10px; }
+      #dofPanel .dofRow label { width: 90px; font-size: 15px; }
+      #dofPanel .dofRow input[type="range"] { width: 130px; }
+      #dofPanel .dofRow span { width: 42px; font-size: 15px; }
+      #dofPanel .dofDebugRow label { font-size: 15px; }
+      #dofPanel input[type="checkbox"] { width: 20px; height: 20px; }
+
+      input[type="range"]::-webkit-slider-thumb { width: 26px; height: 26px; }
+      input[type="range"]::-moz-range-thumb { width: 26px; height: 26px; }
+
+      #dropHint { font-size: 22px; padding: 0 20px; text-align: center; }
+    }
   </style>
 </head>
 <body>
   <canvas id="glcanvas"></canvas>
   <div id="dropHint">Drop a .gltf file to add its skeleton(s)</div>
-  <div id="hint">Left-drag: orbit &nbsp;&middot;&nbsp; Right-drag: pan &nbsp;&middot;&nbsp; Scroll: zoom &nbsp;&middot;&nbsp; Drag in a .gltf to add skeletons</div>
+  <div id="hint">Left-drag: orbit &nbsp;&middot;&nbsp; Right-drag: pan &nbsp;&middot;&nbsp; Scroll: zoom &nbsp;&middot;&nbsp; Touch: 1-finger orbit, 2-finger pan/pinch-zoom &nbsp;&middot;&nbsp; Drag in a .gltf to add skeletons</div>
   <div id="dofPanel">
     <div class="dofTitle">DOF (metres from camera)</div>
     <div class="dofRow">

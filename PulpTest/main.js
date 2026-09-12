@@ -159,6 +159,70 @@ canvas.addEventListener(
   { passive: false }
 );
 
+// Touch: 1 finger orbits (mirrors left-drag), 2 fingers pan (mirrors
+// right-drag) and pinch-zoom together.
+let touchMode = null; // "orbit" | "pan-zoom"
+let lastTouchX = 0, lastTouchY = 0;
+let lastPinchDist = 0;
+
+function touchMidpoint(touches) {
+  return [(touches[0].clientX + touches[1].clientX) / 2, (touches[0].clientY + touches[1].clientY) / 2];
+}
+function touchDistance(touches) {
+  return Math.hypot(touches[0].clientX - touches[1].clientX, touches[0].clientY - touches[1].clientY);
+}
+
+function onTouchStart(e) {
+  e.preventDefault();
+  if (e.touches.length === 1) {
+    touchMode = "orbit";
+    lastTouchX = e.touches[0].clientX;
+    lastTouchY = e.touches[0].clientY;
+  } else if (e.touches.length >= 2) {
+    touchMode = "pan-zoom";
+    [lastTouchX, lastTouchY] = touchMidpoint(e.touches);
+    lastPinchDist = touchDistance(e.touches);
+  }
+}
+
+function onTouchMove(e) {
+  e.preventDefault();
+  if (touchMode === "orbit" && e.touches.length === 1) {
+    const dx = e.touches[0].clientX - lastTouchX;
+    const dy = e.touches[0].clientY - lastTouchY;
+    lastTouchX = e.touches[0].clientX;
+    lastTouchY = e.touches[0].clientY;
+    camera.orbit(dx, dy);
+  } else if (touchMode === "pan-zoom" && e.touches.length >= 2) {
+    const [mx, my] = touchMidpoint(e.touches);
+    camera.pan(mx - lastTouchX, my - lastTouchY, canvas.clientHeight);
+    lastTouchX = mx;
+    lastTouchY = my;
+
+    const dist = touchDistance(e.touches);
+    if (lastPinchDist > 0) camera.zoomBy(lastPinchDist / dist);
+    lastPinchDist = dist;
+  }
+}
+
+// Dropping to 1 finger mid-gesture re-anchors to orbit rather than jumping;
+// dropping to 0 just ends the gesture.
+function onTouchEndOrCancel(e) {
+  e.preventDefault();
+  if (e.touches.length === 0) {
+    touchMode = null;
+  } else if (e.touches.length === 1) {
+    touchMode = "orbit";
+    lastTouchX = e.touches[0].clientX;
+    lastTouchY = e.touches[0].clientY;
+  }
+}
+
+canvas.addEventListener("touchstart", onTouchStart, { passive: false });
+canvas.addEventListener("touchmove", onTouchMove, { passive: false });
+canvas.addEventListener("touchend", onTouchEndOrCancel, { passive: false });
+canvas.addEventListener("touchcancel", onTouchEndOrCancel, { passive: false });
+
 // ---------- Load the glTF scene ----------
 
 const scene = await loadScene("./Scene.gltf");
