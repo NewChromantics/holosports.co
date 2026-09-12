@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Isometric WebGL Scene</title>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #17181c; }
+    canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+    canvas:active { cursor: grabbing; }
+    #hint {
+      position: fixed; left: 12px; top: 10px;
+      font: 12px/1.4 system-ui, sans-serif; color: #9aa0aa;
+      pointer-events: none; user-select: none;
+    }
+    #transport {
+      position: fixed; left: 0; right: 0; bottom: 0;
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px; box-sizing: border-box;
+      background: rgba(20, 21, 26, 0.85);
+      font: 13px system-ui, sans-serif; color: #d7dae0;
+    }
+    #transport button {
+      flex: 0 0 auto;
+      background: #2c2e36; color: #eee; border: 1px solid #444753;
+      border-radius: 4px; padding: 6px 14px; cursor: pointer; font: inherit;
+    }
+    #transport button:hover { background: #3a3d48; }
+    #timeline { flex: 1 1 auto; }
+    #timeLabel { flex: 0 0 auto; min-width: 90px; text-align: right; font-variant-numeric: tabular-nums; }
+    #dofPanel {
+      position: fixed; right: 12px; top: 10px;
+      display: flex; flex-direction: column; gap: 4px;
+      padding: 8px 10px; box-sizing: border-box;
+      background: rgba(20, 21, 26, 0.85);
+      border: 1px solid #444753; border-radius: 4px;
+      font: 12px system-ui, sans-serif; color: #d7dae0;
+    }
+    #dofPanel .dofTitle { font-weight: 600; margin-bottom: 2px; }
+    #dofPanel .dofRow { display: flex; align-items: center; gap: 6px; }
+    #dofPanel .dofRow label { width: 68px; flex: 0 0 auto; }
+    #dofPanel .dofRow input[type="range"] { width: 110px; }
+    #dofPanel .dofRow span { width: 32px; text-align: right; font-family: ui-monospace, "SF Mono", Consolas, monospace; font-variant-numeric: tabular-nums; }
+    #dofPanel .dofDebugRow { display: flex; align-items: center; gap: 6px; margin-top: 4px; padding-top: 4px; border-top: 1px solid #444753; }
+    #dropHint {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(20, 30, 24, 0.55);
+      border: 3px dashed #9bb7;
+      font: 20px system-ui, sans-serif; color: #eef2ee;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.12s ease;
+      z-index: 10;
+    }
+    #dropHint.visible { opacity: 1; }
+  </style>
+</head>
+<body>
+  <canvas id="glcanvas"></canvas>
+  <div id="dropHint">Drop a .gltf file to add its skeleton(s)</div>
+  <div id="hint">Left-drag: orbit &nbsp;&middot;&nbsp; Right-drag: pan &nbsp;&middot;&nbsp; Scroll: zoom &nbsp;&middot;&nbsp; Drag in a .gltf to add skeletons</div>
+  <div id="dofPanel">
+    <div class="dofTitle">DOF (metres from camera)</div>
+    <div class="dofRow">
+      <label for="dofNearBlur">Near blur</label>
+      <input id="dofNearBlur" type="range" min="0" max="60" step="0.5" value="10" />
+      <span id="dofNearBlurVal">10.0</span>
+    </div>
+    <div class="dofRow">
+      <label for="dofNearClear">Near clear</label>
+      <input id="dofNearClear" type="range" min="0" max="60" step="0.5" value="16" />
+      <span id="dofNearClearVal">16.0</span>
+    </div>
+    <div class="dofRow">
+      <label for="dofFarClear">Far clear</label>
+      <input id="dofFarClear" type="range" min="0" max="60" step="0.5" value="17" />
+      <span id="dofFarClearVal">17.0</span>
+    </div>
+    <div class="dofRow">
+      <label for="dofFarBlur">Far blur</label>
+      <input id="dofFarBlur" type="range" min="0" max="60" step="0.5" value="26" />
+      <span id="dofFarBlurVal">26.0</span>
+    </div>
+    <div class="dofDebugRow">
+      <input id="dofDebugZones" type="checkbox" />
+      <label for="dofDebugZones">Debug zones</label>
+    </div>
+  </div>
+  <div id="transport">
+    <button id="playBtn">Pause</button>
+    <input id="timeline" type="range" min="0" max="1" step="0.01" value="0" />
+    <span id="timeLabel">0.0s / 0.0s</span>
+    <label for="geoDebugSlider" style="margin-left: 16px;">Geo debug</label>
+    <input id="geoDebugSlider" type="range" min="0" max="1" step="0.01" value="0" style="flex: 0 0 120px;" />
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
