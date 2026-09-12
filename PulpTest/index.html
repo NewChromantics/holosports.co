@@ -57,45 +57,27 @@
     }
     #dropHint.visible { opacity: 1; }
 
-    /* Bigger, touch-friendly controls on phones/tablets. pointer:coarse
-       targets touch input specifically (rather than just narrow screens),
-       so a touch laptop/tablet in a wide window still gets the bump. */
+    /* On touch devices, most of this UI (the DOF panel, play button, geo
+       debug slider, hint text) was covering enough of the screen to eat
+       touch-drag gestures meant for the canvas — so it's hidden here,
+       leaving just the playback timeline + clock, kept small and on one
+       line so they take up as little of the screen as possible. */
     @media (pointer: coarse) {
-      #hint { font-size: 14px; top: 8px; left: 10px; }
+      #hint, #dofPanel, #playBtn, #geoDebugLabel, #geoDebugSlider {
+        display: none;
+      }
 
       #transport {
-        flex-wrap: wrap;
-        row-gap: 10px;
-        padding: 14px 16px;
-        font-size: 16px;
+        flex-wrap: nowrap;
+        gap: 8px;
+        padding: 8px 12px;
+        font-size: 13px;
       }
-      #transport button {
-        padding: 12px 20px;
-        font-size: 16px;
-        min-height: 44px;
-        border-radius: 6px;
-      }
-      #timeline { min-width: 160px; }
-      #timeLabel { min-width: 110px; font-size: 15px; }
-      #geoDebugSlider { flex: 1 1 140px !important; }
+      #timeline { min-width: 0; }
+      #timeLabel { min-width: 0; font-size: 12px; }
 
-      #dofPanel {
-        top: auto; bottom: 74px; right: 8px;
-        padding: 14px 16px;
-        font-size: 15px;
-        gap: 10px;
-        max-width: 260px;
-      }
-      #dofPanel .dofTitle { font-size: 15px; }
-      #dofPanel .dofRow { gap: 10px; }
-      #dofPanel .dofRow label { width: 90px; font-size: 15px; }
-      #dofPanel .dofRow input[type="range"] { width: 130px; }
-      #dofPanel .dofRow span { width: 42px; font-size: 15px; }
-      #dofPanel .dofDebugRow label { font-size: 15px; }
-      #dofPanel input[type="checkbox"] { width: 20px; height: 20px; }
-
-      input[type="range"]::-webkit-slider-thumb { width: 26px; height: 26px; }
-      input[type="range"]::-moz-range-thumb { width: 26px; height: 26px; }
+      input[type="range"]::-webkit-slider-thumb { width: 22px; height: 22px; }
+      input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; }
 
       #dropHint { font-size: 22px; padding: 0 20px; text-align: center; }
     }
@@ -136,7 +118,7 @@
     <button id="playBtn">Pause</button>
     <input id="timeline" type="range" min="0" max="1" step="0.01" value="0" />
     <span id="timeLabel">0.0s / 0.0s</span>
-    <label for="geoDebugSlider" style="margin-left: 16px;">Geo debug</label>
+    <label id="geoDebugLabel" for="geoDebugSlider" style="margin-left: 16px;">Geo debug</label>
     <input id="geoDebugSlider" type="range" min="0" max="1" step="0.01" value="0" style="flex: 0 0 120px;" />
   </div>
   <script type="module" src="./main.js"></script>

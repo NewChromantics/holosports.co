@@ -3,6 +3,7 @@ import { multiply, rotationX } from "./mat4.js";
 import { loadScene, loadSceneFromFile } from "./gltf-loader.js";
 import { createProgram } from "./gl-utils.js";
 import { createSkeletonRenderer } from "./skeleton-renderer.js";
+import { createCameraGizmo } from "./camera-gizmo.js";
 import { createDepthOfField } from "./post-fx.js";
 import {
   GROUND_HALF_SIZE, GROUND_CELL_SIZE, GROUND_COLOR_A, GROUND_COLOR_B, GROUND_Y,
@@ -101,6 +102,7 @@ const texU = {
 };
 
 const skeletonRenderer = createSkeletonRenderer(gl);
+const cameraGizmo = createCameraGizmo(gl);
 const postFx = createDepthOfField(gl);
 
 // Fragment shaders above output real (non-1) alpha at antialiased SDF edges.
@@ -448,6 +450,7 @@ function frame(nowMs) {
   drawGround();
   drawFloor();
   skeletonRenderer.draw(camera, scene.skeletons, currentTime);
+  cameraGizmo.draw(camera, scene.cameraTrack, currentTime);
   postFx.endScene(camera, currentDofCurve(), dofDebugZonesCheckbox.checked);
 
   requestAnimationFrame(frame);

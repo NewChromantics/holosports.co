@@ -126,3 +126,30 @@ export function cross3(a, b) {
     a[0] * b[1] - a[1] * b[0],
   ];
 }
+
+// Unit quaternion [x, y, z, w] -> 3x3 rotation matrix, row-major (m[0..2] =
+// row 0, etc.) so mulMat3Vec3 below can just dot each row with the vector.
+// Normalizes first — some glTF exporters (this file's included) write
+// slightly non-unit quaternions, which would otherwise skew the result into
+// a combined rotation+scale rather than a pure rotation.
+export function quatToMat3(q) {
+  const len = Math.hypot(q[0], q[1], q[2], q[3]) || 1;
+  const x = q[0] / len, y = q[1] / len, z = q[2] / len, w = q[3] / len;
+  const x2 = x + x, y2 = y + y, z2 = z + z;
+  const xx = x * x2, xy = x * y2, xz = x * z2;
+  const yy = y * y2, yz = y * z2, zz = z * z2;
+  const wx = w * x2, wy = w * y2, wz = w * z2;
+  return [
+    1 - (yy + zz), xy - wz, xz + wy,
+    xy + wz, 1 - (xx + zz), yz - wx,
+    xz - wy, yz + wx, 1 - (xx + yy),
+  ];
+}
+
+export function mulMat3Vec3(m, v) {
+  return [
+    m[0] * v[0] + m[1] * v[1] + m[2] * v[2],
+    m[3] * v[0] + m[4] * v[1] + m[5] * v[2],
+    m[6] * v[0] + m[7] * v[1] + m[8] * v[2],
+  ];
+}
