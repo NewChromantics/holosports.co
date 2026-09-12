@@ -33,10 +33,10 @@ export const MIN_CAMERA_PITCH_DEGREES = 10;
 // straight-line distance from the camera along its view axis. These are the
 // sliders' starting values — see the "DOF" panel in the page, which lets
 // you retune all four live.
-export const DOF_DEFAULT_NEAR_BLUR = 8; // fully blurred at/below this distance
-export const DOF_DEFAULT_NEAR_CLEAR = 15; // fully sharp from here...
-export const DOF_DEFAULT_FAR_CLEAR = 19; // ...to here
-export const DOF_DEFAULT_FAR_BLUR = 30; // fully blurred at/beyond this distance
+export const DOF_DEFAULT_NEAR_BLUR = 5; // fully blurred at/below this distance
+export const DOF_DEFAULT_NEAR_CLEAR = 10; // fully sharp from here...
+export const DOF_DEFAULT_FAR_CLEAR = 20; // ...to here
+export const DOF_DEFAULT_FAR_BLUR = 50; // fully blurred at/beyond this distance
 export const DOF_SLIDER_MAX = 60; // range-input upper bound, metres
 export const DOF_MAX_BLUR_LOD = 5; // mip level sampled at full blur
 
